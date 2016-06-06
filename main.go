@@ -11,7 +11,7 @@ import (
 	"os"
 	"sync"
 
-	"go-hn/stories"
+	"gohn/stories"
 )
 
 // Item fields, see: https://github.com/HackerNews/API#items
