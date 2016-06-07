@@ -14,23 +14,6 @@ import (
 	"gohn/stories"
 )
 
-// Item fields, see: https://github.com/HackerNews/API#items
-type Item struct {
-	ID          int
-	Time        int
-	Score       int
-	Type        string
-	By          string
-	Text        string
-	Dead        bool
-	Parent      int
-	Kids        []int
-	URL         string
-	Title       string
-	Parts       interface{}
-	Descendants interface{}
-}
-
 func main() {
 	fmt.Println("HN Reader")
 	args := os.Args[1:]
@@ -49,7 +32,7 @@ func main() {
 	}
 
 	// Get details of all stories in the list
-	var items = make([]Item, len(itemIDs))
+	var items = make([]*stories.Item, len(itemIDs))
 	var wg sync.WaitGroup
 	wg.Add(len(items))
 	for i, e := range itemIDs {
@@ -68,12 +51,6 @@ func main() {
 	}
 	wg.Wait()
 
-	PrintItems(items)
-}
-
-// PrintItems prints items index & title
-func PrintItems(items []Item) {
-	for i, e := range items {
-		fmt.Printf("[%v] %s\n", i+1, e.Title)
-	}
+	// Print the stories list
+	stories.PrintItems(items)
 }

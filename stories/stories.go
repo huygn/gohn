@@ -23,6 +23,23 @@ const (
 	ItemURL = "https://hacker-news.firebaseio.com/v0/item/%v.json"
 )
 
+// Item fields, see: https://github.com/HackerNews/API#items
+type Item struct {
+	ID          int
+	Time        int
+	Score       int
+	Type        string
+	By          string
+	Text        string
+	Dead        bool
+	Parent      int
+	Kids        []int
+	URL         string
+	Title       string
+	Parts       interface{}
+	Descendants interface{}
+}
+
 // GetStoryByID retreives a story's detail
 func GetStoryByID(id int, target interface{}) error {
 	url := fmt.Sprintf(ItemURL, id)
@@ -49,4 +66,11 @@ func GetJSON(url string, target interface{}) error {
 	defer r.Body.Close()
 
 	return json.NewDecoder(r.Body).Decode(target)
+}
+
+// PrintItems prints items index & title
+func PrintItems(items []*Item) {
+	for i, e := range items {
+		fmt.Printf("[%v] %s\n", i+1, e.Title)
+	}
 }
