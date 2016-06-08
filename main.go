@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sync"
 
 	"gohn/stories"
 )
@@ -33,8 +32,7 @@ func main() {
 
 	// Get details of all stories in the list
 	var items = make([]*stories.Item, len(itemIDs))
-	var wg sync.WaitGroup
-	wg.Add(len(items))
+	c := make(chan int, len(itemIDs))
 	for i, e := range itemIDs {
 		// Due to 'go' keyword that run the func() in the background,
 		// it may run when the for loop reached the max index.
@@ -43,14 +41,16 @@ func main() {
 		// see: http://oyvindsk.com/writing/common-golang-mistakes-1
 		ii, ee := i, e
 		go func() {
-			defer wg.Done()
 			if err := stories.GetStoryByID(ee, &items[ii]); err != nil {
 				log.Fatalf("Error: %s", err)
 			}
+			c <- ii
 		}()
 	}
-	wg.Wait()
-
-	// Print the stories list
-	stories.PrintItems(items)
+	for range itemIDs {
+		select {
+		case ii := <-c:
+			fmt.Printf("[%v] %s\n", ii+1, items[ii].Title)
+		}
+	}
 }

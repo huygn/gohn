@@ -67,10 +67,3 @@ func GetJSON(url string, target interface{}) error {
 
 	return json.NewDecoder(r.Body).Decode(target)
 }
-
-// PrintItems prints items index & title
-func PrintItems(items []*Item) {
-	for i, e := range items {
-		fmt.Printf("[%v] %s\n", i+1, e.Title)
-	}
-}
