@@ -1,4 +1,4 @@
-package stories
+package main
 
 import (
 	"encoding/json"

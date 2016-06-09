@@ -9,8 +9,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"gohn/stories"
 )
 
 func main() {
@@ -19,19 +17,19 @@ func main() {
 	fmt.Printf("--- %s ---\n", args)
 
 	// Find the right URL based on user input of stories types, ie. "new", "top"...
-	url, err := stories.GetStoriesURL(args[0])
+	url, err := GetStoriesURL(args[0])
 	if err != nil {
 		log.Fatalf("Error: %s", err)
 	}
 
 	// Get the list of stories
 	var itemIDs []int
-	if err := stories.GetJSON(url, &itemIDs); err != nil {
+	if err := GetJSON(url, &itemIDs); err != nil {
 		log.Fatalf("Error: %s", err)
 	}
 
 	// Get details of all stories in the list
-	var items = make([]*stories.Item, len(itemIDs))
+	var items = make([]*Item, len(itemIDs))
 	c := make(chan int, len(itemIDs))
 	for i, e := range itemIDs {
 		// Due to 'go' keyword that run the func() in the background,
@@ -41,7 +39,7 @@ func main() {
 		// see: http://oyvindsk.com/writing/common-golang-mistakes-1
 		ii, ee := i, e
 		go func() {
-			if err := stories.GetStoryByID(ee, &items[ii]); err != nil {
+			if err := GetStoryByID(ee, &items[ii]); err != nil {
 				log.Fatalf("Error: %s", err)
 			}
 			c <- ii
