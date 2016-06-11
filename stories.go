@@ -67,3 +67,18 @@ func GetJSON(url string, target interface{}) error {
 
 	return json.NewDecoder(r.Body).Decode(target)
 }
+
+// ReturnJSON return a map[string]interface{} object that represent the JSON object.
+// Note that numbers in the JSON object are marshalled to float64 by Go's default.
+func ReturnJSON(url string) (map[string]interface{}, error) {
+	var target map[string]interface{}
+
+	r, err := http.Get(url)
+	if err != nil {
+		return target, err
+	}
+	defer r.Body.Close()
+
+	errDecode := json.NewDecoder(r.Body).Decode(&target)
+	return target, errDecode
+}
